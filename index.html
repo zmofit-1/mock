@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>College Resources MVP</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <button onclick="showScreen('home')">Home</button>
+    <button onclick="showScreen('search')">Search</button>
+    <button onclick="showScreen('saved')">Saved</button>
+    <button onclick="showScreen('messages')">Messages</button>
+    <button onclick="showScreen('provider')">Provider</button>
+  </nav>
+
+  <!-- HOME / CONSUMER FEED -->
+  <section id="home" class="screen active">
+    <h1>College Resources</h1>
+    <input type="text" placeholder="Search resources…" onclick="showScreen('search')"/>
+    <div class="category-bar">
+      <span onclick="showScreen('search')">🏠 Rooms</span>
+      <span onclick="showScreen('search')">📚 Books</span>
+      <span onclick="showScreen('search')">🧑‍🏫 Tutoring</span>
+      <span onclick="showScreen('search')">🚗 Rides</span>
+      <span onclick="showScreen('search')">🅿 Parking</span>
+      <span onclick="showScreen('search')">💻 Laptops</span>
+    </div>
+    <div class="card" onclick="showScreen('listing')">
+      🏠 Dorm Room Near Science Bldg — $400/mo
+    </div>
+    <div class="card" onclick="showScreen('listing')">
+      📚 Calculus Textbook — $20
+    </div>
+  </section>
+
+  <!-- SEARCH RESULTS -->
+  <section id="search" class="screen">
+    <h1>Search</h1>
+    <div class="filters">
+      <button>Category</button>
+      <button>Price</button>
+      <button>Distance</button>
+    </div>
+    <div class="card" onclick="showScreen('listing')">🅿 Parking Spot — $10/day</div>
+    <div class="card" onclick="showScreen('listing')">🚗 Ride to Airport — $25</div>
+  </section>
+
+  <!-- SAVED LISTINGS -->
+  <section id="saved" class="screen">
+    <h1>Saved Items</h1>
+    <p>No saved listings yet.</p>
+  </section>
+
+  <!-- MESSAGES -->
+  <section id="messages" class="screen">
+    <h1>Messages</h1>
+    <div class="card" onclick="showScreen('chat')">Alex (Provider) — Dorm Room</div>
+  </section>
+
+  <!-- CHAT -->
+  <section id="chat" class="screen">
+    <h1>Chat with Alex</h1>
+    <div class="chat-box">
+      <p><b>You:</b> Hi, is this available?</p>
+      <p><b>Alex:</b> Yes, available for spring.</p>
+    </div>
+    <input type="text" placeholder="Type a message…"/>
+    <button onclick="alert('Message sent!')">Send</button>
+    <button onclick="showScreen('messages')">Back</button>
+  </section>
+
+  <!-- LISTING DETAILS -->
+  <section id="listing" class="screen">
+    <h1>Dorm Room Near Science Bldg</h1>
+    <p><b>Price:</b> $400/mo</p>
+    <p><b>Description:</b> Sublease for spring semester.</p>
+    <p><b>Provider:</b> Alex (Verified ✓, ★4.8)</p>
+    <button class="primary" onclick="showScreen('chat')">Message Provider</button>
+    <button onclick="alert('Saved!')">Save Listing</button>
+    <button onclick="showScreen('home')">Back</button>
+  </section>
+
+  <!-- PROVIDER DASHBOARD -->
+  <section id="provider" class="screen">
+    <h1>Provider Dashboard</h1>
+    <p>Listings:</p>
+    <div class="card" onclick="showScreen('analytics')">📚 Physics Book — Views:12</div>
+    <div class="card" onclick="showScreen('analytics')">🏠 Dorm Room — Views:25</div>
+    <button class="primary" onclick="showScreen('post')">+ Post Resource</button>
+  </section>
+
+  <!-- POST RESOURCE -->
+  <section id="post" class="screen">
+    <h1>Post Resource</h1>
+    <label>Title:<input type="text"/></label>
+    <label>Price:<input type="text"/></label>
+    <label>Description:<textarea></textarea></label>
+    <label>Category:
+      <select>
+        <option>Books</option>
+        <option>Rooms</option>
+        <option>Laptops</option>
+        <option>Tutoring</option>
+        <option>Rides</option>
+        <option>Parking</option>
+      </select>
+    </label>
+    <button class="primary" onclick="showScreen('provider')">Publish</button>
+    <button onclick="showScreen('provider')">Cancel</button>
+  </section>
+
+  <!-- ANALYTICS -->
+  <section id="analytics" class="screen">
+    <h1>Listing Analytics</h1>
+    <p>Views: 25</p>
+    <p>Messages: 4</p>
+    <button onclick="showScreen('provider')">Back</button>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
