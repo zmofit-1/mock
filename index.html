@@ -1,124 +1,192 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>College Resources MVP</title>
-  <link rel="stylesheet" href="styles.css"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>College Resources — MVP (Interactive)</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <!-- Bottom Navigation -->
-  <nav class="bottom-nav">
-    <button onclick="showScreen('home')">Home</button>
-    <button onclick="showScreen('search')">Search</button>
-    <button onclick="showScreen('saved')">Saved</button>
-    <button onclick="showScreen('messages')">Messages</button>
-    <button onclick="showScreen('provider')">Provider</button>
-  </nav>
+  <!-- HEADER with quick user info -->
+  <header>
+    <div id="appTitle">College Resources</div>
+    <div id="userInfo"></div>
+  </header>
 
-  <!-- HOME / CONSUMER FEED -->
-  <section id="home" class="screen active">
-    <h1>College Resources</h1>
-    <input type="text" placeholder="Search resources…" onclick="showScreen('search')"/>
-    <div class="category-bar">
-      <span onclick="showScreen('search')">🏠 Rooms</span>
-      <span onclick="showScreen('search')">📚 Books</span>
-      <span onclick="showScreen('search')">🧑‍🏫 Tutoring</span>
-      <span onclick="showScreen('search')">🚗 Rides</span>
-      <span onclick="showScreen('search')">🅿 Parking</span>
-      <span onclick="showScreen('search')">💻 Laptops</span>
+  <!-- SCREENS -->
+  <!-- REGISTER -->
+  <section id="register" class="screen active">
+    <h2>Create account</h2>
+    <input id="regEmail" placeholder="Email" />
+    <input id="regPhone" placeholder="Phone (optional)" />
+    <input id="regPass" type="password" placeholder="Password" />
+    <button onclick="register()">Register (send verification)</button>
+    <button onclick="simulateGoogleSignup()">Sign up with Google</button>
+    <p>Already registered? <a href="#" onclick="showScreen('login')">Login</a></p>
+  </section>
+
+  <!-- VERIFY -->
+  <section id="verify" class="screen">
+    <h2>Verify email</h2>
+    <p>We sent a 6-digit code to your email. (simulate code: <b>123456</b>)</p>
+    <input id="verifyCode" placeholder="Enter code" />
+    <button onclick="verifyAccount()">Verify</button>
+  </section>
+
+  <!-- LOGIN -->
+  <section id="login" class="screen">
+    <h2>Login</h2>
+    <input id="loginEmail" placeholder="Email" />
+    <input id="loginPass" type="password" placeholder="Password" />
+    <label><input id="enableBiometric" type="checkbox" /> Enable biometric login</label>
+    <button onclick="login()">Login</button>
+    <p>New? <a href="#" onclick="showScreen('register')">Create an account</a></p>
+  </section>
+
+  <!-- HOME -->
+  <section id="home" class="screen">
+    <h2>Discover on Campus</h2>
+    <div class="horizontal">
+      <button onclick="showScreen('post')">+ Post Resource</button>
+      <button onclick="showScreen('search')">Search</button>
+      <button onclick="showScreen('consumer')">My Feed</button>
     </div>
-    <div class="card" onclick="showScreen('listing')">
-      🏠 Dorm Room Near Science Bldg — $400/mo
-    </div>
-    <div class="card" onclick="showScreen('listing')">
-      📚 Calculus Textbook — $20
+    <div id="homeFeed"></div>
+  </section>
+
+  <!-- POST -->
+  <section id="post" class="screen">
+    <h2>Post Resource</h2>
+    <input id="resTitle" placeholder="Title (e.g., Calculus Textbook)" />
+    <input id="resPrice" placeholder="Price (numeric, USD)" type="number" />
+    <select id="resUnit">
+      <option value="one-time">One-time (sale)</option>
+      <option value="per-month">Per month (rent)</option>
+      <option value="per-hour">Per hour (service)</option>
+    </select>
+    <select id="resCat">
+      <option>Books</option>
+      <option>Rooms</option>
+      <option>Laptops</option>
+      <option>Tutoring</option>
+      <option>Rides</option>
+      <option>Parking</option>
+    </select>
+    <textarea id="resDesc" placeholder="Description"></textarea>
+    <input id="resLocation" placeholder="Location (e.g., Library Lot)"/>
+    <input id="resEmail" placeholder="Contact email (default: your account)" />
+    <input id="resPhone" placeholder="Contact phone (optional)" />
+    <label><input id="visibilityCampus" type="checkbox" checked /> Campus-only visibility</label>
+    <div class="hint">Fee policy: A 2% service fee is charged to the provider only after a successful purchase.</div>
+    <div class="horizontal">
+      <button class="primary" onclick="publishResource()">Publish</button>
+      <button onclick="showScreen('home')">Cancel</button>
     </div>
   </section>
 
-  <!-- SEARCH RESULTS -->
+  <!-- CONSUMER FEED -->
+  <section id="consumer" class="screen">
+    <h2>Consumer Feed</h2>
+    <div id="consumerFeed"></div>
+  </section>
+
+  <!-- SEARCH -->
   <section id="search" class="screen">
-    <h1>Search</h1>
-    <div class="filters">
-      <button>Category</button>
-      <button>Price</button>
-      <button>Distance</button>
+    <h2>Search</h2>
+    <input id="searchTerm" placeholder="Search by title or category" />
+    <div class="horizontal">
+      <button onclick="performSearch()">Search</button>
+      <button onclick="clearSearch()">Clear</button>
     </div>
-    <div class="card" onclick="showScreen('listing')">🅿 Parking Spot — $10/day</div>
-    <div class="card" onclick="showScreen('listing')">🚗 Ride to Airport — $25</div>
+    <div id="searchResults"></div>
   </section>
 
-  <!-- SAVED LISTINGS -->
-  <section id="saved" class="screen">
-    <h1>Saved Items</h1>
-    <p>No saved listings yet.</p>
+  <!-- LISTING DETAIL / PURCHASE -->
+  <section id="listing" class="screen">
+    <h2 id="listingTitle"></h2>
+    <div id="listingMeta"></div>
+    <p id="listingDesc"></p>
+    <div id="listingProvider"></div>
+    <div class="horizontal">
+      <button class="primary" onclick="openChat(currentListing.providerId)">Message Provider</button>
+      <button onclick="openPurchase()">Buy / Lease</button>
+      <button onclick="saveListing(currentListing.id)">Save</button>
+      <button onclick="showScreen('home')">Back</button>
+    </div>
+    <div id="listingNotes"></div>
+  </section>
+
+  <!-- PURCHASE FLOW (modal-like screen) -->
+  <section id="purchase" class="screen">
+    <h2>Confirm Purchase</h2>
+    <div id="purchaseSummary"></div>
+    <div class="horizontal">
+      <button class="primary" onclick="completePurchase()">Pay Now (simulate)</button>
+      <button onclick="showScreen('listing')">Cancel</button>
+    </div>
   </section>
 
   <!-- MESSAGES -->
   <section id="messages" class="screen">
-    <h1>Messages</h1>
-    <div class="card" onclick="showScreen('chat')">Alex (Provider) — Dorm Room</div>
+    <h2>Messages</h2>
+    <div id="threads"></div>
+    <button onclick="showScreen('home')">Back</button>
   </section>
 
   <!-- CHAT -->
   <section id="chat" class="screen">
-    <h1>Chat with Alex</h1>
-    <div class="chat-box">
-      <p><b>You:</b> Hi, is this available?</p>
-      <p><b>Alex:</b> Yes, available for spring.</p>
+    <h2 id="chatWith"></h2>
+    <div id="chatBox" class="chat-box"></div>
+    <input id="chatMsg" placeholder="Type a message" />
+    <div class="horizontal">
+      <button onclick="sendMessage()">Send</button>
+      <button onclick="showScreen('messages')">Back</button>
     </div>
-    <input type="text" placeholder="Type a message…"/>
-    <button onclick="alert('Message sent!')">Send</button>
-    <button onclick="showScreen('messages')">Back</button>
-  </section>
-
-  <!-- LISTING DETAILS -->
-  <section id="listing" class="screen">
-    <h1>Dorm Room Near Science Bldg</h1>
-    <p><b>Price:</b> $400/mo</p>
-    <p><b>Description:</b> Sublease for spring semester.</p>
-    <p><b>Provider:</b> Alex (Verified ✓, ★4.8)</p>
-    <button class="primary" onclick="showScreen('chat')">Message Provider</button>
-    <button onclick="alert('Saved!')">Save Listing</button>
-    <button onclick="showScreen('home')">Back</button>
   </section>
 
   <!-- PROVIDER DASHBOARD -->
-  <section id="provider" class="screen">
-    <h1>Provider Dashboard</h1>
-    <p>Listings:</p>
-    <div class="card" onclick="showScreen('analytics')">📚 Physics Book — Views:12</div>
-    <div class="card" onclick="showScreen('analytics')">🏠 Dorm Room — Views:25</div>
-    <button class="primary" onclick="showScreen('post')">+ Post Resource</button>
+  <section id="providerDash" class="screen">
+    <h2>Provider Dashboard</h2>
+    <div class="stats">
+      <div>Active listings: <span id="statActive">0</span></div>
+      <div>Pending payout: $<span id="statPending">0.00</span></div>
+      <div>Available payout: $<span id="statAvailable">0.00</span></div>
+    </div>
+    <div id="providerListings"></div>
+    <div class="horizontal">
+      <button onclick="requestPayout()">Request Payout</button>
+      <button onclick="showScreen('home')">Back</button>
+    </div>
   </section>
 
-  <!-- POST RESOURCE -->
-  <section id="post" class="screen">
-    <h1>Post Resource</h1>
-    <label>Title:<input type="text"/></label>
-    <label>Price:<input type="text"/></label>
-    <label>Description:<textarea></textarea></label>
-    <label>Category:
-      <select>
-        <option>Books</option>
-        <option>Rooms</option>
-        <option>Laptops</option>
-        <option>Tutoring</option>
-        <option>Rides</option>
-        <option>Parking</option>
-      </select>
-    </label>
-    <button class="primary" onclick="showScreen('provider')">Publish</button>
-    <button onclick="showScreen('provider')">Cancel</button>
+  <!-- TRANSACTIONS / HISTORY -->
+  <section id="transactions" class="screen">
+    <h2>Transactions</h2>
+    <div id="transactionList"></div>
+    <button onclick="showScreen('home')">Back</button>
   </section>
 
-  <!-- ANALYTICS -->
-  <section id="analytics" class="screen">
-    <h1>Listing Analytics</h1>
-    <p>Views: 25</p>
-    <p>Messages: 4</p>
-    <button onclick="showScreen('provider')">Back</button>
+  <!-- SETTINGS -->
+  <section id="settings" class="screen">
+    <h2>Settings</h2>
+    <div>
+      <label>Email: <span id="settingsEmail"></span></label><br/>
+      <label>Phone: <span id="settingsPhone"></span></label><br/>
+    </div>
+    <div class="horizontal">
+      <button onclick="showScreen('home')">Back</button>
+      <button onclick="logout()">Logout</button>
+    </div>
   </section>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button onclick="showScreen('home')">Home</button>
+    <button onclick="showScreen('providerDash')">Provider</button>
+    <button onclick="showScreen('consumer')">Consumer</button>
+    <button onclick="showScreen('search')">Search</button>
+    <button onclick="showScreen('settings')">Settings</button>
+  </nav>
 
   <script src="script.js"></script>
 </body>
